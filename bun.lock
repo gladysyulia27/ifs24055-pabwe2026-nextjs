@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "ifs24025-pabwe2026-nextjs",
+      "name": "ifs24055-pabwe2026-nextjs",
       "dependencies": {
         "@reduxjs/toolkit": "^2.5.0",
         "next": "^15.3.0",
