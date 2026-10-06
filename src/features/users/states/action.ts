@@ -56,12 +56,12 @@ export function asyncGetProfile() {
     try {
       const data = await getProfileApi();
       dispatch(setProfile(data.data.user));
+      dispatch(setIsProfile(false));
       return data.data.user;
     } catch (error) {
       dispatch(setProfile(null));
-      throw error;
-    } finally {
       dispatch(setIsProfile(false));
+      throw error;
     }
   };
 }
@@ -73,12 +73,12 @@ export function asyncChangeProfile(payload: { name: string; email: string }) {
       const data = await updateProfileApi(payload);
       dispatch(setProfile(data.data.user));
       await showSuccessDialog('Profil berhasil diperbarui');
+      dispatch(setIsChangeProfile(false));
       return data;
     } catch (error: any) {
       await showErrorDialog('Gagal mengubah profil', error.message);
-      throw error;
-    } finally {
       dispatch(setIsChangeProfile(false));
+      throw error;
     }
   };
 }

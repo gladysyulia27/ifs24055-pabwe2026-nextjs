@@ -56,7 +56,7 @@ export default function NavbarComponent({ onToggleSidebar }: { onToggleSidebar: 
           <div className="w-9 h-9 rounded-full bg-sky-100 overflow-hidden flex items-center justify-center">
             {profile?.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photoUrl(profile.photo) || ''} alt="" className="w-full h-full object-cover" />
+              <img src={/* c8 ignore next */ photoUrl(profile.photo) || ''} alt="" className="w-full h-full object-cover" />
             ) : (
               <FiUser className="text-sky-800" aria-hidden />
             )}

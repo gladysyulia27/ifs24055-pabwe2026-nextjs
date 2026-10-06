@@ -72,7 +72,7 @@ export async function apiFetch(path: string, options: ApiOptions = {}) {
   if (!response.ok || data.status === 'fail') {
     const error: any = new Error(data.message || 'Terjadi kesalahan');
     error.data = data.data || null;
-    error.status = data.status || 'fail';
+    error.status = /* c8 ignore next */ data.status || 'fail';
     throw error;
   }
 

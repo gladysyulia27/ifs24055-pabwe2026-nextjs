@@ -79,13 +79,13 @@ export function asyncGetPostById(id: string | number) {
     try {
       const data = await api.getPostById(id);
       dispatch(setPost(data.data.post));
+      dispatch(setIsPost(false));
       return data.data.post;
     } catch (error: any) {
       dispatch(setPost(null));
       await showErrorDialog('Gagal mengambil detail', error.message);
-      throw error;
-    } finally {
       dispatch(setIsPost(false));
+      throw error;
     }
   };
 }

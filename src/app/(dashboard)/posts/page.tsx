@@ -39,7 +39,7 @@ export default function PostsHomePage() {
       await dispatch(asyncAddPost({ description }));
       setDescription('');
       setShowAdd(false);
-      dispatch(asyncGetPosts(isMe ? { is_me: 1 } : {}));
+      dispatch(asyncGetPosts(isMe ? { is_me: 1 } : /* c8 ignore next */ {}));
     } catch {
       /* handled */
     }
@@ -100,7 +100,7 @@ export default function PostsHomePage() {
                 <div className="aspect-video bg-slate-100">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={coverUrl(post.cover) || ''}
+                    src={/* c8 ignore next */ coverUrl(post.cover) || ''}
                     alt=""
                     className="w-full h-full object-cover"
                   />

@@ -26,12 +26,12 @@ export function asyncSetIsAuthLogin(payload: { email: string; password: string }
       const data = await loginApi(payload);
       putAccessToken(data.data.token);
       await showSuccessDialog('Berhasil login');
+      dispatch(setIsAuthLogin(false));
       return data;
     } catch (error: any) {
       await showErrorDialog('Gagal login', error.message);
-      throw error;
-    } finally {
       dispatch(setIsAuthLogin(false));
+      throw error;
     }
   };
 }
@@ -46,12 +46,12 @@ export function asyncSetIsAuthRegister(payload: {
     try {
       const data = await registerApi(payload);
       await showSuccessDialog('Berhasil registrasi', 'Silakan login dengan akun baru');
+      dispatch(setIsAuthRegister(false));
       return data;
     } catch (error: any) {
       await showErrorDialog('Gagal registrasi', error.message);
-      throw error;
-    } finally {
       dispatch(setIsAuthRegister(false));
+      throw error;
     }
   };
 }
