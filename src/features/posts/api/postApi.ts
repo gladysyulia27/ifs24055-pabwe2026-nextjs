@@ -1,12 +1,50 @@
-import { api } from "@/helpers/apiHelper";
-import type { Post } from "@/types";
-export const getPosts = (isMe = false) => api<{ posts: Post[] }>("/posts", { query: { is_me: isMe ? 1 : undefined } });
-export const getPost = (id: string) => api<{ post: Post }>(`/posts/${id}`);
-export const addPost = (description: string) => api("/posts", { method: "POST", body: { description } });
-export const changePost = (id: string, description: string) => api(`/posts/${id}`, { method: "PUT", body: { description } });
-export const changeCover = (id: string, file: File) => { const f = new FormData(); f.append("cover", file); return api(`/posts/${id}/cover`, { method: "POST", body: f }); };
-export const deletePost = (id: string) => api(`/posts/${id}`, { method: "DELETE" });
-export const toggleLike = (id: string) => api(`/posts/${id}/likes`, { method: "POST" });
-export const addComment = (id: string, comment: string) => api(`/posts/${id}/comments`, { method: "POST", body: { comment } });
-export const deleteComment = (id: string, comment_id: string) => api(`/posts/${id}/comments`, { method: "DELETE", body: { comment_id } });
-export const deleteAllPosts = () => api("/posts", { method: "DELETE" });
+import { apiFetch } from '@/helpers/apiHelper';
+
+export async function getPosts(params: Record<string, any> = {}) {
+  return apiFetch('/posts', { params });
+}
+
+export async function getPostById(id: string | number) {
+  return apiFetch(`/posts/${id}`);
+}
+
+export async function addPost(payload: { description: string }) {
+  return apiFetch('/posts', { method: 'POST', body: payload });
+}
+
+export async function updatePost(id: string | number, payload: { description: string }) {
+  return apiFetch(`/posts/${id}`, { method: 'PUT', body: payload });
+}
+
+export async function changeCover(id: string | number, file: File) {
+  const formData = new FormData();
+  formData.append('cover', file);
+  return apiFetch(`/posts/${id}/cover`, {
+    method: 'POST',
+    body: formData,
+    isFormData: true,
+  });
+}
+
+export async function deletePost(id: string | number) {
+  return apiFetch(`/posts/${id}`, { method: 'DELETE' });
+}
+
+export async function likePost(id: string | number, like: 0 | 1 = 1) {
+  return apiFetch(`/posts/${id}/likes`, {
+    method: 'POST',
+    body: { like },
+  });
+}
+
+export async function addComment(id: string | number, payload: { comment: string }) {
+  return apiFetch(`/posts/${id}/comments`, { method: 'POST', body: payload });
+}
+
+export async function deleteComment(postId: string | number, commentId: string | number) {
+  return apiFetch(`/posts/${postId}/comments/${commentId}`, { method: 'DELETE' });
+}
+
+export async function deleteAllPosts() {
+  return apiFetch('/posts', { method: 'DELETE' });
+}

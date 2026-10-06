@@ -1,3 +1,5 @@
-export const DELCOM_BASEURL = process.env.NEXT_PUBLIC_DELCOM_BASEURL || "https://open-api.delcom.org/api/v1";
-export const APP_PORT = Number(process.env.APP_PORT || 3000);
-export const API_PROXY_PATH = "/delcom-proxy";
+// Semua request ke API Delcom lewat proxy milik aplikasi sendiri (same-origin).
+// Tujuan sebenarnya diatur lewat rewrites di next.config.ts.
+export const DELCOM_BASEURL = '/api/delcom';
+
+export const APP_PORT = parseInt(process.env.APP_PORT || '3000', 10);

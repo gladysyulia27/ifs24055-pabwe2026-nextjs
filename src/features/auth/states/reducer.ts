@@ -1,14 +1,20 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { api, getAccessToken, removeAccessToken } from "@/helpers/apiHelper";
-import type { User } from "@/types";
-export const asyncLoadProfile = createAsyncThunk("auth/profile", async () => {
-  if (!getAccessToken()) return null;
-  try { return (await api<{ user: User }>("/users/me")).user; } catch { removeAccessToken(); return null; }
-});
-const slice = createSlice({
-  name: "auth", initialState: { profile: null as User | null, isProfile: false },
-  reducers: { isAuthLogout: (s) => { removeAccessToken(); s.profile = null; } },
-  extraReducers: (b) => { b.addCase(asyncLoadProfile.fulfilled, (s, a) => { s.profile = a.payload; s.isProfile = true; }); },
-});
-export const { isAuthLogout } = slice.actions;
-export default slice.reducer;
+import { ActionType } from './action';
+
+const initialState = {
+  isAuthLogin: false,
+  isAuthRegister: false,
+  isAuthLogout: false,
+};
+
+export default function authReducer(state = initialState, action: any = {}) {
+  switch (action.type) {
+    case ActionType.SET_IS_AUTH_LOGIN:
+      return { ...state, isAuthLogin: action.payload.isAuthLogin };
+    case ActionType.SET_IS_AUTH_REGISTER:
+      return { ...state, isAuthRegister: action.payload.isAuthRegister };
+    case ActionType.SET_IS_AUTH_LOGOUT:
+      return { ...state, isAuthLogout: action.payload.isAuthLogout };
+    default:
+      return state;
+  }
+}
