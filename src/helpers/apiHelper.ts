@@ -62,17 +62,20 @@ export async function apiFetch(path: string, options: ApiOptions = {}) {
   }
 
   const response = await fetch(url, fetchOptions);
-  let data: any;
+  let data: Record<string, unknown>;
   try {
-    data = await response.json();
+    data = (await response.json()) as Record<string, unknown>;
   } catch {
     data = { status: 'fail', message: 'Respons tidak valid' };
   }
 
-  if (!response.ok || data.status === 'fail') {
-    const error: any = new Error(data.message || 'Terjadi kesalahan');
-    error.data = data.data || null;
-    error.status = /* c8 ignore next */ data.status || 'fail';
+  if (!response.ok || data['status'] === 'fail') {
+    const error = new Error((data['message'] as string) || 'Terjadi kesalahan') as Error & {
+      data: unknown;
+      status: unknown;
+    };
+    error.data = data['data'] ?? null;
+    error.status = /* c8 ignore next */ data['status'] ?? 'fail';
     throw error;
   }
 

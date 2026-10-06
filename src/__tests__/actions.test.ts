@@ -16,6 +16,7 @@ vi.mock('@/helpers/toolsHelper', () => ({
   showErrorDialog: vi.fn().mockResolvedValue({}),
   showWarningDialog: vi.fn(),
   showConfirmDialog: vi.fn(),
+  getErrorMessage: (error: unknown) => (error instanceof Error ? error.message : String(error)),
 }));
 
 const err = Object.assign(new Error('boom'), {});

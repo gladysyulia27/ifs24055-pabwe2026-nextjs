@@ -1,3 +1,7 @@
+export function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 async function getSwal() {
   const mod = await import('sweetalert2');
   return mod.default;

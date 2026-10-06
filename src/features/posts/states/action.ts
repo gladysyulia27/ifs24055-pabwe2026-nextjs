@@ -1,5 +1,5 @@
 import * as api from '../api/postApi';
-import { showErrorDialog, showSuccessDialog } from '@/helpers/toolsHelper';
+import { showErrorDialog, showSuccessDialog, getErrorMessage } from '@/helpers/toolsHelper';
 import type { AppDispatch } from '@/store';
 
 export const ActionType = {
@@ -22,10 +22,10 @@ export const ActionType = {
   SET_IS_POST_DELETED_COMMENT: 'SET_IS_POST_DELETED_COMMENT',
 } as const;
 
-export function setPosts(posts: any[]) {
+export function setPosts(posts: unknown[]) {
   return { type: ActionType.SET_POSTS, payload: { posts } };
 }
-export function setPost(post: any) {
+export function setPost(post: unknown) {
   return { type: ActionType.SET_POST, payload: { post } };
 }
 export function setIsPost(isPost: boolean) {
@@ -62,13 +62,13 @@ export function setIsPostLiked(v: boolean) {
   return { type: ActionType.SET_IS_POST_LIKED, payload: { isPostLiked: v } };
 }
 
-export function asyncGetPosts(params: Record<string, any> = {}) {
+export function asyncGetPosts(params: Record<string, unknown> = {}) {
   return async (dispatch: AppDispatch) => {
     try {
       const data = await api.getPosts(params);
-      dispatch(setPosts(data.data.posts || []));
-    } catch (error: any) {
-      await showErrorDialog('Gagal mengambil postingan', error.message);
+      dispatch(setPosts((data as { data: { posts?: unknown[] } }).data.posts || []));
+    } catch (error) {
+      await showErrorDialog('Gagal mengambil postingan', getErrorMessage(error));
     }
   };
 }
@@ -78,12 +78,12 @@ export function asyncGetPostById(id: string | number) {
     dispatch(setIsPost(true));
     try {
       const data = await api.getPostById(id);
-      dispatch(setPost(data.data.post));
+      dispatch(setPost((data as { data: { post: unknown } }).data.post));
       dispatch(setIsPost(false));
-      return data.data.post;
-    } catch (error: any) {
+      return (data as { data: { post: unknown } }).data.post;
+    } catch (error) {
       dispatch(setPost(null));
-      await showErrorDialog('Gagal mengambil detail', error.message);
+      await showErrorDialog('Gagal mengambil detail', getErrorMessage(error));
       dispatch(setIsPost(false));
       throw error;
     }
@@ -98,8 +98,8 @@ export function asyncAddPost(payload: { description: string }) {
       await api.addPost(payload);
       dispatch(setIsPostAdded(true));
       await showSuccessDialog('Postingan berhasil ditambahkan');
-    } catch (error: any) {
-      await showErrorDialog('Gagal menambah postingan', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal menambah postingan', getErrorMessage(error));
       throw error;
     } finally {
       dispatch(setIsPostAdd(false));
@@ -115,8 +115,8 @@ export function asyncChangePost(id: string | number, payload: { description: str
       await api.updatePost(id, payload);
       dispatch(setIsPostChanged(true));
       await showSuccessDialog('Postingan berhasil diubah');
-    } catch (error: any) {
-      await showErrorDialog('Gagal mengubah postingan', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal mengubah postingan', getErrorMessage(error));
       throw error;
     } finally {
       dispatch(setIsPostChange(false));
@@ -132,8 +132,8 @@ export function asyncChangePostCover(id: string | number, file: File) {
       await api.changeCover(id, file);
       dispatch(setIsPostChangedCover(true));
       await showSuccessDialog('Cover berhasil diubah');
-    } catch (error: any) {
-      await showErrorDialog('Gagal mengubah cover', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal mengubah cover', getErrorMessage(error));
       throw error;
     } finally {
       dispatch(setIsPostChangeCover(false));
@@ -149,8 +149,8 @@ export function asyncDeletePost(id: string | number) {
       await api.deletePost(id);
       dispatch(setIsPostDeleted(true));
       await showSuccessDialog('Postingan berhasil dihapus');
-    } catch (error: any) {
-      await showErrorDialog('Gagal menghapus', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal menghapus', getErrorMessage(error));
       throw error;
     } finally {
       dispatch(setIsPostDelete(false));
@@ -164,8 +164,8 @@ export function asyncLikePost(id: string | number, like: 0 | 1 = 1) {
     try {
       await api.likePost(id, like);
       dispatch(setIsPostLiked(true));
-    } catch (error: any) {
-      await showErrorDialog('Gagal like', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal like', getErrorMessage(error));
       throw error;
     } finally {
       dispatch(setIsPostLike(false));
@@ -179,8 +179,8 @@ export function asyncAddComment(id: string | number, comment: string) {
       await api.addComment(id, { comment });
       await dispatch(asyncGetPostById(id));
       await showSuccessDialog('Komentar ditambahkan');
-    } catch (error: any) {
-      await showErrorDialog('Gagal menambah komentar', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal menambah komentar', getErrorMessage(error));
       throw error;
     }
   };
@@ -192,8 +192,8 @@ export function asyncDeleteComment(postId: string | number, commentId: string | 
       await api.deleteComment(postId, commentId);
       await dispatch(asyncGetPostById(postId));
       await showSuccessDialog('Komentar dihapus');
-    } catch (error: any) {
-      await showErrorDialog('Gagal menghapus komentar', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal menghapus komentar', getErrorMessage(error));
       throw error;
     }
   };

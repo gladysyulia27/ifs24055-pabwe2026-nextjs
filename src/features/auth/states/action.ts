@@ -1,6 +1,6 @@
 import { login as loginApi, register as registerApi, logout as logoutApi } from '../api/authApi';
 import { putAccessToken, removeAccessToken } from '@/helpers/apiHelper';
-import { showErrorDialog, showSuccessDialog } from '@/helpers/toolsHelper';
+import { showErrorDialog, showSuccessDialog, getErrorMessage } from '@/helpers/toolsHelper';
 import type { AppDispatch } from '@/store';
 
 export const ActionType = {
@@ -24,12 +24,12 @@ export function asyncSetIsAuthLogin(payload: { email: string; password: string }
     dispatch(setIsAuthLogin(true));
     try {
       const data = await loginApi(payload);
-      putAccessToken(data.data.token);
+      putAccessToken((data as { data: { token: string } }).data.token);
       await showSuccessDialog('Berhasil login');
       dispatch(setIsAuthLogin(false));
       return data;
-    } catch (error: any) {
-      await showErrorDialog('Gagal login', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal login', getErrorMessage(error));
       dispatch(setIsAuthLogin(false));
       throw error;
     }
@@ -48,8 +48,8 @@ export function asyncSetIsAuthRegister(payload: {
       await showSuccessDialog('Berhasil registrasi', 'Silakan login dengan akun baru');
       dispatch(setIsAuthRegister(false));
       return data;
-    } catch (error: any) {
-      await showErrorDialog('Gagal registrasi', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal registrasi', getErrorMessage(error));
       dispatch(setIsAuthRegister(false));
       throw error;
     }

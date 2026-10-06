@@ -11,6 +11,7 @@ import {
   formatDate,
   coverUrl,
   photoUrl,
+  getErrorMessage,
 } from '@/helpers/toolsHelper';
 
 vi.mock('sweetalert2', () => ({
@@ -76,5 +77,11 @@ describe('toolsHelper', () => {
     expect(photoUrl(null)).toBeNull();
     expect(photoUrl('https://x/y.png')).toBe('https://x/y.png');
     expect(photoUrl('a/b.png')).toBe('https://open-api.delcom.org/a/b.png');
+  });
+
+  it('getErrorMessage mengembalikan message dari Error atau String dari nilai lain', () => {
+    expect(getErrorMessage(new Error('oops'))).toBe('oops');
+    expect(getErrorMessage('plain string')).toBe('plain string');
+    expect(getErrorMessage(42)).toBe('42');
   });
 });

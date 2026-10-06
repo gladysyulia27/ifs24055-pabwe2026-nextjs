@@ -1,8 +1,10 @@
 import { ActionType } from './action';
 
+type PostsAction = { type: string; payload: Record<string, unknown> };
+
 const initialState = {
-  posts: [] as any[],
-  post: null as any,
+  posts: [] as unknown[],
+  post: null as unknown,
   isPost: false,
   isPostAdd: false,
   isPostAdded: false,
@@ -16,7 +18,7 @@ const initialState = {
   isPostLiked: false,
 };
 
-export default function postsReducer(state = initialState, action: any = {}) {
+export default function postsReducer(state = initialState, action: PostsAction = { type: '', payload: {} }) {
   switch (action.type) {
     case ActionType.SET_POSTS:
       return { ...state, posts: action.payload.posts };

@@ -5,7 +5,7 @@ import {
   changePhoto as changePhotoApi,
   changePassword as changePasswordApi,
 } from '../api/userApi';
-import { showErrorDialog, showSuccessDialog } from '@/helpers/toolsHelper';
+import { showErrorDialog, showSuccessDialog, getErrorMessage } from '@/helpers/toolsHelper';
 import type { AppDispatch } from '@/store';
 
 export const ActionType = {
@@ -17,10 +17,10 @@ export const ActionType = {
   SET_IS_CHANGE_PROFILE_PASSWORD: 'SET_IS_CHANGE_PROFILE_PASSWORD',
 } as const;
 
-export function setUsers(users: any[]) {
+export function setUsers(users: unknown[]) {
   return { type: ActionType.SET_USERS, payload: { users } };
 }
-export function setProfile(profile: any) {
+export function setProfile(profile: unknown) {
   return { type: ActionType.SET_PROFILE, payload: { profile } };
 }
 export function setIsProfile(isProfile: boolean) {
@@ -43,9 +43,9 @@ export function asyncGetUsers() {
   return async (dispatch: AppDispatch) => {
     try {
       const data = await getUsersApi();
-      dispatch(setUsers(data.data.users || []));
-    } catch (error: any) {
-      await showErrorDialog('Gagal mengambil data pengguna', error.message);
+      dispatch(setUsers((data as { data: { users?: unknown[] } }).data.users || []));
+    } catch (error) {
+      await showErrorDialog('Gagal mengambil data pengguna', getErrorMessage(error));
     }
   };
 }
@@ -55,9 +55,9 @@ export function asyncGetProfile() {
     dispatch(setIsProfile(true));
     try {
       const data = await getProfileApi();
-      dispatch(setProfile(data.data.user));
+      dispatch(setProfile((data as { data: { user: unknown } }).data.user));
       dispatch(setIsProfile(false));
-      return data.data.user;
+      return (data as { data: { user: unknown } }).data.user;
     } catch (error) {
       dispatch(setProfile(null));
       dispatch(setIsProfile(false));
@@ -71,12 +71,12 @@ export function asyncChangeProfile(payload: { name: string; email: string }) {
     dispatch(setIsChangeProfile(true));
     try {
       const data = await updateProfileApi(payload);
-      dispatch(setProfile(data.data.user));
+      dispatch(setProfile((data as { data: { user: unknown } }).data.user));
       await showSuccessDialog('Profil berhasil diperbarui');
       dispatch(setIsChangeProfile(false));
       return data;
-    } catch (error: any) {
-      await showErrorDialog('Gagal mengubah profil', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal mengubah profil', getErrorMessage(error));
       dispatch(setIsChangeProfile(false));
       throw error;
     }
@@ -89,10 +89,10 @@ export function asyncChangeProfilePhoto(file: File) {
     try {
       await changePhotoApi(file);
       const data = await getProfileApi();
-      dispatch(setProfile(data.data.user));
+      dispatch(setProfile((data as { data: { user: unknown } }).data.user));
       await showSuccessDialog('Foto profil berhasil diubah');
-    } catch (error: any) {
-      await showErrorDialog('Gagal mengubah foto', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal mengubah foto', getErrorMessage(error));
       throw error;
     } finally {
       dispatch(setIsChangeProfilePhoto(false));
@@ -110,8 +110,8 @@ export function asyncChangeProfilePassword(payload: {
     try {
       await changePasswordApi(payload);
       await showSuccessDialog('Kata sandi berhasil diubah');
-    } catch (error: any) {
-      await showErrorDialog('Gagal mengubah kata sandi', error.message);
+    } catch (error) {
+      await showErrorDialog('Gagal mengubah kata sandi', getErrorMessage(error));
       throw error;
     } finally {
       dispatch(setIsChangeProfilePassword(false));

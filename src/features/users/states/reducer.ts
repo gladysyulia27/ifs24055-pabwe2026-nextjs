@@ -1,15 +1,17 @@
 import { ActionType } from './action';
 
+type UsersAction = { type: string; payload: Record<string, unknown> };
+
 const initialState = {
-  users: [] as any[],
-  profile: null as any,
+  users: [] as unknown[],
+  profile: null as unknown,
   isProfile: false,
   isChangeProfile: false,
   isChangeProfilePhoto: false,
   isChangeProfilePassword: false,
 };
 
-export default function usersReducer(state = initialState, action: any = {}) {
+export default function usersReducer(state = initialState, action: UsersAction = { type: '', payload: {} }) {
   switch (action.type) {
     case ActionType.SET_USERS:
       return { ...state, users: action.payload.users };
