@@ -1,95 +1,138 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { asyncSetIsAuthLogout } from '@/features/auth/states/action';
-import { photoUrl } from '@/helpers/toolsHelper';
-import { FiMenu, FiLogOut, FiUser, FiChevronDown } from 'react-icons/fi';
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  IconMessageCircle,
+  IconUser,
+  IconLogout,
+  IconChevronDown,
+  IconMenu2,
+  IconX,
+} from "@tabler/icons-react";
 
-export default function NavbarComponent({ onToggleSidebar }: { onToggleSidebar: () => void }) {
-  const dispatch = useAppDispatch();
+function NavbarComponent({ profile, handleLogout, onToggleSidebar, isSidebarOpen }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null as HTMLDivElement | null);
   const router = useRouter();
-  const profile = useAppSelector((s) => s.users.profile) as {
-    name?: string;
-    photo?: string | null;
-  } | null;
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  async function handleLogout() {
-    await dispatch(asyncSetIsAuthLogout());
-    router.replace('/auth/login');
-  }
-
   return (
-    <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200 h-16 flex items-center px-4 gap-4">
-      <button
-        type="button"
-        onClick={onToggleSidebar}
-        className="lg:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-700"
-        aria-label="Buka menu navigasi"
-      >
-        <FiMenu size={22} />
-      </button>
-      <Link href="/posts" className="font-bold text-lg text-sky-800 flex items-center gap-2">
-        <span className="w-8 h-8 rounded-lg bg-sky-800 text-white flex items-center justify-center text-sm font-extrabold">
-          DP
-        </span>
-        <span className="hidden sm:inline">Delcom Posts</span>
-      </Link>
-      <div className="flex-1" />
-      <div className="relative" ref={menuRef}>
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-slate-100"
-          aria-label="Menu profil"
-          aria-expanded={open}
-        >
-          <div className="w-9 h-9 rounded-full bg-sky-100 overflow-hidden flex items-center justify-center">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-xs transition-all">
+      <div className="w-full flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            data-testid="toggle-sidebar-btn"
+            onClick={onToggleSidebar}
+            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            aria-label="Toggle Navigation"
+          >
+            {isSidebarOpen ? <IconX size={20} /> : <IconMenu2 size={20} />}
+          </button>
+
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+              <IconMessageCircle size={22} stroke={2.5} />
+            </div>
+            <div>
+              <span className="text-lg font-bold bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-800 bg-clip-text text-transparent">
+                Delcom Post
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        {/* Profile User Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            type="button"
+            data-testid="profile-dropdown-button"
+            onClick={() => setDropdownOpen((prev) => !prev)}
+            className="flex items-center gap-3 p-1.5 pr-3 rounded-full border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+          >
             {profile?.photo ? (
-              <img src={/* c8 ignore next */ photoUrl(profile.photo) || ''} alt="" className="w-full h-full object-cover" />
+              <img
+                src={profile.photo}
+                alt={profile.name}
+                className="w-8 h-8 rounded-full object-cover border border-slate-200"
+              />
             ) : (
-              <FiUser className="text-sky-800" aria-hidden />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-xs">
+                {profile?.name?.charAt(0)?.toUpperCase() || "U"}
+              </div>
             )}
-          </div>
-          <span className="hidden sm:block text-sm font-medium text-slate-700 max-w-[120px] truncate">
-            {profile?.name || 'Pengguna'}
-          </span>
-          <FiChevronDown className="text-slate-600" size={16} aria-hidden />
-        </button>
-        {open && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 py-1 z-50" role="menu">
-            <Link
-              href="/profile"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
-              role="menuitem"
+            <div className="hidden sm:flex flex-col text-left">
+              <span className="text-sm font-semibold text-slate-800 leading-tight">
+                {profile?.name || "Pengguna"}
+              </span>
+              <span className="text-xs text-slate-600 leading-tight">
+                {profile?.email || ""}
+              </span>
+            </div>
+            <IconChevronDown
+              size={16}
+              className={`text-slate-600 transition-transform duration-200 ${
+                dropdownOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {dropdownOpen && (
+            <div
+              data-testid="profile-dropdown-menu"
+              className="absolute right-0 mt-2 w-56 rounded-2xl bg-white p-2 shadow-xl ring-1 ring-slate-900/5 divide-y divide-slate-100 z-50 animate-in fade-in zoom-in-95 duration-150"
             >
-              <FiUser size={16} aria-hidden /> Profil Saya
-            </Link>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-700 hover:bg-red-50"
-              role="menuitem"
-              aria-label="Keluar dari akun"
-            >
-              <FiLogOut size={16} aria-hidden /> Keluar
-            </button>
-          </div>
-        )}
+              <div className="px-3 py-2 sm:hidden">
+                <p className="text-sm font-semibold text-slate-800">{profile?.name}</p>
+                <p className="text-xs text-slate-600 truncate">{profile?.email}</p>
+              </div>
+
+              <div className="py-1">
+                <button
+                  type="button"
+                  data-testid="dropdown-profile-link"
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    router.push("/profile");
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-slate-700 rounded-xl hover:bg-slate-100 transition-colors text-left"
+                >
+                  <IconUser size={18} className="text-slate-600" />
+                  Profil Saya
+                </button>
+              </div>
+
+              <div className="pt-1">
+                <button
+                  type="button"
+                  data-testid="dropdown-logout-button"
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 rounded-xl hover:bg-red-50 transition-colors text-left"
+                >
+                  <IconLogout size={18} className="text-red-600" />
+                  Keluar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
 }
+
+export default NavbarComponent;

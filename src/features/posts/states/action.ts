@@ -1,202 +1,210 @@
-import * as api from '../api/postApi';
-import { showErrorDialog, showSuccessDialog, getErrorMessage } from '@/helpers/toolsHelper';
-import type { AppDispatch } from '@/store';
+import type { AppAction } from "@/types/action";
+import type { Post } from "@/types";
+import {
+  showErrorDialog,
+  showSuccessDialog,
+} from "../../../helpers/toolsHelper";
+import postApi from "../api/postApi";
+
+type Dispatcher = (action: AppAction) => unknown;
 
 export const ActionType = {
-  SET_POSTS: 'SET_POSTS',
-  SET_POST: 'SET_POST',
-  SET_IS_POST: 'SET_IS_POST',
-  SET_IS_POST_ADD: 'SET_IS_POST_ADD',
-  SET_IS_POST_ADDED: 'SET_IS_POST_ADDED',
-  SET_IS_POST_CHANGE: 'SET_IS_POST_CHANGE',
-  SET_IS_POST_CHANGED: 'SET_IS_POST_CHANGED',
-  SET_IS_POST_CHANGE_COVER: 'SET_IS_POST_CHANGE_COVER',
-  SET_IS_POST_CHANGED_COVER: 'SET_IS_POST_CHANGED_COVER',
-  SET_IS_POST_DELETE: 'SET_IS_POST_DELETE',
-  SET_IS_POST_DELETED: 'SET_IS_POST_DELETED',
-  SET_IS_POST_LIKE: 'SET_IS_POST_LIKE',
-  SET_IS_POST_LIKED: 'SET_IS_POST_LIKED',
-  SET_IS_POST_ADD_COMMENT: 'SET_IS_POST_ADD_COMMENT',
-  SET_IS_POST_ADDED_COMMENT: 'SET_IS_POST_ADDED_COMMENT',
-  SET_IS_POST_DELETE_COMMENT: 'SET_IS_POST_DELETE_COMMENT',
-  SET_IS_POST_DELETED_COMMENT: 'SET_IS_POST_DELETED_COMMENT',
-} as const;
+  SET_POSTS: "SET_POSTS",
+  SET_POST: "SET_POST",
+  SET_IS_POST: "SET_IS_POST",
+  SET_IS_POST_ADD: "SET_IS_POST_ADD",
+  SET_IS_POST_ADDED: "SET_IS_POST_ADDED",
+  SET_IS_POST_CHANGE: "SET_IS_POST_CHANGE",
+  SET_IS_POST_CHANGED: "SET_IS_POST_CHANGED",
+  SET_IS_POST_CHANGE_COVER: "SET_IS_POST_CHANGE_COVER",
+  SET_IS_POST_CHANGED_COVER: "SET_IS_POST_CHANGED_COVER",
+  SET_IS_POST_DELETE: "SET_IS_POST_DELETE",
+  SET_IS_POST_DELETED: "SET_IS_POST_DELETED",
+  SET_IS_POST_LIKE: "SET_IS_POST_LIKE",
+  SET_IS_POST_LIKED: "SET_IS_POST_LIKED",
+  SET_IS_POST_ADD_COMMENT: "SET_IS_POST_ADD_COMMENT",
+  SET_IS_POST_ADDED_COMMENT: "SET_IS_POST_ADDED_COMMENT",
+  SET_IS_POST_DELETE_COMMENT: "SET_IS_POST_DELETE_COMMENT",
+  SET_IS_POST_DELETED_COMMENT: "SET_IS_POST_DELETED_COMMENT",
+  SET_IS_POST_DELETE_ALL: "SET_IS_POST_DELETE_ALL",
+  SET_IS_POST_DELETED_ALL: "SET_IS_POST_DELETED_ALL",
+};
 
-export function setPosts(posts: unknown[]) {
-  return { type: ActionType.SET_POSTS, payload: { posts } };
-}
-export function setPost(post: unknown) {
-  return { type: ActionType.SET_POST, payload: { post } };
-}
-export function setIsPost(isPost: boolean) {
-  return { type: ActionType.SET_IS_POST, payload: { isPost } };
-}
-export function setIsPostAdd(v: boolean) {
-  return { type: ActionType.SET_IS_POST_ADD, payload: { isPostAdd: v } };
-}
-export function setIsPostAdded(v: boolean) {
-  return { type: ActionType.SET_IS_POST_ADDED, payload: { isPostAdded: v } };
-}
-export function setIsPostChange(v: boolean) {
-  return { type: ActionType.SET_IS_POST_CHANGE, payload: { isPostChange: v } };
-}
-export function setIsPostChanged(v: boolean) {
-  return { type: ActionType.SET_IS_POST_CHANGED, payload: { isPostChanged: v } };
-}
-export function setIsPostChangeCover(v: boolean) {
-  return { type: ActionType.SET_IS_POST_CHANGE_COVER, payload: { isPostChangeCover: v } };
-}
-export function setIsPostChangedCover(v: boolean) {
-  return { type: ActionType.SET_IS_POST_CHANGED_COVER, payload: { isPostChangedCover: v } };
-}
-export function setIsPostDelete(v: boolean) {
-  return { type: ActionType.SET_IS_POST_DELETE, payload: { isPostDelete: v } };
-}
-export function setIsPostDeleted(v: boolean) {
-  return { type: ActionType.SET_IS_POST_DELETED, payload: { isPostDeleted: v } };
-}
-export function setIsPostLike(v: boolean) {
-  return { type: ActionType.SET_IS_POST_LIKE, payload: { isPostLike: v } };
-}
-export function setIsPostLiked(v: boolean) {
-  return { type: ActionType.SET_IS_POST_LIKED, payload: { isPostLiked: v } };
+// ---------------------------------------------------------------------------
+// Collection & detail
+// ---------------------------------------------------------------------------
+export function setPostsActionCreator(posts: Post[]) {
+  return { type: ActionType.SET_POSTS, payload: posts };
 }
 
-export function asyncGetPosts(
-  params: Record<string, string | number | boolean | null | undefined> = {}
+export function asyncSetPosts(isMe = false) {
+  return async (dispatch: Dispatcher) => {
+    try {
+      const posts = await postApi.getPosts(isMe);
+      dispatch(setPostsActionCreator(posts));
+    } catch {
+      dispatch(setPostsActionCreator([]));
+    }
+  };
+}
+
+export function setPostActionCreator(post: Post | null | undefined) {
+  return { type: ActionType.SET_POST, payload: post };
+}
+
+export function setIsPostActionCreator(status: boolean) {
+  return { type: ActionType.SET_IS_POST, payload: status };
+}
+
+export function asyncSetPost(postId: number | string) {
+  return async (dispatch: Dispatcher) => {
+    try {
+      const post = await postApi.getPostById(postId);
+      dispatch(setPostActionCreator(post));
+    } catch {
+      dispatch(setPostActionCreator(null));
+    } finally {
+      dispatch(setIsPostActionCreator(true));
+    }
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Mutations: each pair of flags is "<is>Action" (finished) and "<is>Actioned"
+// (finished successfully), mirroring the other features of the app.
+// ---------------------------------------------------------------------------
+function mutation(
+  call: () => Promise<string | unknown>,
+  setSucceeded: (value: boolean) => AppAction,
+  setFinished: (value: boolean) => AppAction,
+  options: { silent?: boolean; successMessage?: string } = {}
 ) {
-  return async (dispatch: AppDispatch) => {
+  return async (dispatch: Dispatcher) => {
     try {
-      const data = await api.getPosts(params);
-      dispatch(setPosts((data as { data: { posts?: unknown[] } }).data.posts || []));
+      const message = await call();
+      if (!options.silent) {
+        showSuccessDialog(options.successMessage || String(message));
+      }
+      dispatch(setSucceeded(true));
     } catch (error) {
-      await showErrorDialog('Gagal mengambil postingan', getErrorMessage(error));
-    }
-  };
-}
-
-export function asyncGetPostById(id: string | number) {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setIsPost(true));
-    try {
-      const data = await api.getPostById(id);
-      dispatch(setPost((data as { data: { post: unknown } }).data.post));
-      dispatch(setIsPost(false));
-      return (data as { data: { post: unknown } }).data.post;
-    } catch (error) {
-      dispatch(setPost(null));
-      await showErrorDialog('Gagal mengambil detail', getErrorMessage(error));
-      dispatch(setIsPost(false));
-      throw error;
-    }
-  };
-}
-
-export function asyncAddPost(payload: { description: string }) {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setIsPostAdd(true));
-    dispatch(setIsPostAdded(false));
-    try {
-      await api.addPost(payload);
-      dispatch(setIsPostAdded(true));
-      await showSuccessDialog('Postingan berhasil ditambahkan');
-    } catch (error) {
-      await showErrorDialog('Gagal menambah postingan', getErrorMessage(error));
-      throw error;
+      showErrorDialog(error.message);
+      dispatch(setSucceeded(false));
     } finally {
-      dispatch(setIsPostAdd(false));
+      dispatch(setFinished(true));
     }
   };
 }
 
-export function asyncChangePost(id: string | number, payload: { description: string }) {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setIsPostChange(true));
-    dispatch(setIsPostChanged(false));
-    try {
-      await api.updatePost(id, payload);
-      dispatch(setIsPostChanged(true));
-      await showSuccessDialog('Postingan berhasil diubah');
-    } catch (error) {
-      await showErrorDialog('Gagal mengubah postingan', getErrorMessage(error));
-      throw error;
-    } finally {
-      dispatch(setIsPostChange(false));
-    }
-  };
+export function setIsPostAddActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_ADD, payload: value };
+}
+export function setIsPostAddedActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_ADDED, payload: value };
+}
+export function asyncSetIsPostAdd(description: string) {
+  return mutation(
+    () => postApi.postPost(description),
+    setIsPostAddedActionCreator,
+    setIsPostAddActionCreator,
+    { successMessage: "Postingan berhasil dipublikasikan!" }
+  );
 }
 
-export function asyncChangePostCover(id: string | number, file: File) {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setIsPostChangeCover(true));
-    dispatch(setIsPostChangedCover(false));
-    try {
-      await api.changeCover(id, file);
-      dispatch(setIsPostChangedCover(true));
-      await showSuccessDialog('Cover berhasil diubah');
-    } catch (error) {
-      await showErrorDialog('Gagal mengubah cover', getErrorMessage(error));
-      throw error;
-    } finally {
-      dispatch(setIsPostChangeCover(false));
-    }
-  };
+export function setIsPostChangeActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_CHANGE, payload: value };
+}
+export function setIsPostChangedActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_CHANGED, payload: value };
+}
+export function asyncSetIsPostChange(postId: number | string, description: string) {
+  return mutation(
+    () => postApi.putPost(postId, description),
+    setIsPostChangedActionCreator,
+    setIsPostChangeActionCreator
+  );
 }
 
-export function asyncDeletePost(id: string | number) {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setIsPostDelete(true));
-    dispatch(setIsPostDeleted(false));
-    try {
-      await api.deletePost(id);
-      dispatch(setIsPostDeleted(true));
-      await showSuccessDialog('Postingan berhasil dihapus');
-    } catch (error) {
-      await showErrorDialog('Gagal menghapus', getErrorMessage(error));
-      throw error;
-    } finally {
-      dispatch(setIsPostDelete(false));
-    }
-  };
+export function setIsPostChangeCoverActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_CHANGE_COVER, payload: value };
+}
+export function setIsPostChangedCoverActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_CHANGED_COVER, payload: value };
+}
+export function asyncSetIsPostChangeCover(postId: number | string, cover: File) {
+  return mutation(
+    () => postApi.postPostCover(postId, cover),
+    setIsPostChangedCoverActionCreator,
+    setIsPostChangeCoverActionCreator
+  );
 }
 
-export function asyncLikePost(id: string | number, like: 0 | 1 = 1) {
-  return async (dispatch: AppDispatch) => {
-    dispatch(setIsPostLike(true));
-    try {
-      await api.likePost(id, like);
-      dispatch(setIsPostLiked(true));
-    } catch (error) {
-      await showErrorDialog('Gagal like', getErrorMessage(error));
-      throw error;
-    } finally {
-      dispatch(setIsPostLike(false));
-    }
-  };
+export function setIsPostDeleteActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_DELETE, payload: value };
+}
+export function setIsPostDeletedActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_DELETED, payload: value };
+}
+export function asyncSetIsPostDelete(postId: number | string) {
+  return mutation(
+    () => postApi.deletePost(postId),
+    setIsPostDeletedActionCreator,
+    setIsPostDeleteActionCreator
+  );
 }
 
-export function asyncAddComment(id: string | number, comment: string) {
-  return async (dispatch: AppDispatch) => {
-    try {
-      await api.addComment(id, { comment });
-      await dispatch(asyncGetPostById(id));
-      await showSuccessDialog('Komentar ditambahkan');
-    } catch (error) {
-      await showErrorDialog('Gagal menambah komentar', getErrorMessage(error));
-      throw error;
-    }
-  };
+export function setIsPostLikeActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_LIKE, payload: value };
+}
+export function setIsPostLikedActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_LIKED, payload: value };
+}
+export function asyncSetIsPostLike(postId: number | string, like: boolean) {
+  return mutation(
+    () => postApi.postPostLike(postId, like),
+    setIsPostLikedActionCreator,
+    setIsPostLikeActionCreator,
+    { silent: true }
+  );
 }
 
-export function asyncDeleteComment(postId: string | number, commentId: string | number) {
-  return async (dispatch: AppDispatch) => {
-    try {
-      await api.deleteComment(postId, commentId);
-      await dispatch(asyncGetPostById(postId));
-      await showSuccessDialog('Komentar dihapus');
-    } catch (error) {
-      await showErrorDialog('Gagal menghapus komentar', getErrorMessage(error));
-      throw error;
-    }
-  };
+export function setIsPostAddCommentActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_ADD_COMMENT, payload: value };
+}
+export function setIsPostAddedCommentActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_ADDED_COMMENT, payload: value };
+}
+export function asyncSetIsPostAddComment(postId: number | string, comment: string) {
+  return mutation(
+    () => postApi.postPostComment(postId, comment),
+    setIsPostAddedCommentActionCreator,
+    setIsPostAddCommentActionCreator
+  );
+}
+
+export function setIsPostDeleteCommentActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_DELETE_COMMENT, payload: value };
+}
+export function setIsPostDeletedCommentActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_DELETED_COMMENT, payload: value };
+}
+export function asyncSetIsPostDeleteComment(postId: number | string) {
+  return mutation(
+    () => postApi.deletePostComment(postId),
+    setIsPostDeletedCommentActionCreator,
+    setIsPostDeleteCommentActionCreator
+  );
+}
+
+export function setIsPostDeleteAllActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_DELETE_ALL, payload: value };
+}
+export function setIsPostDeletedAllActionCreator(value: boolean) {
+  return { type: ActionType.SET_IS_POST_DELETED_ALL, payload: value };
+}
+export function asyncSetIsPostDeleteAll() {
+  return mutation(
+    () => postApi.deleteAllPosts(),
+    setIsPostDeletedAllActionCreator,
+    setIsPostDeleteAllActionCreator
+  );
 }

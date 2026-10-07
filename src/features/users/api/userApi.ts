@@ -1,27 +1,117 @@
-import { apiFetch } from '@/helpers/apiHelper';
+import apiHelper from "../../../helpers/apiHelper";
+import { DELCOM_BASEURL } from "@/lib/config";
 
-export async function getUsers() {
-  return apiFetch('/users');
-}
+const userApi = (() => {
+  const BASE_URL = `${DELCOM_BASEURL}/users`;
 
-export async function getProfile() {
-  return apiFetch('/users/me');
-}
+  function _url(path) {
+    return BASE_URL + path;
+  }
 
-export async function updateProfile(payload: { name: string; email: string }) {
-  return apiFetch('/users/me', { method: 'PUT', body: payload });
-}
+  async function getUsers() {
+    const response = await apiHelper.fetchData(_url("/"), {
+      method: "GET",
+    });
 
-export async function changePhoto(file: File) {
-  const formData = new FormData();
-  formData.append('photo', file);
-  return apiFetch('/users/me/photo', { method: 'POST', body: formData, isFormData: true });
-}
+    const result = await response.json();
+    if (result.status !== "success" && !result.success) {
+      throw new Error(result.message || "Gagal mengambil data pengguna");
+    }
 
-export async function changePassword(payload: {
-  password: string;
-  new_password: string;
-  new_password_confirmation: string;
-}) {
-  return apiFetch('/users/password', { method: 'PUT', body: payload });
-}
+    return result.data?.users || [];
+  }
+
+  async function getUserById(userId) {
+    const response = await apiHelper.fetchData(_url(`/${userId}`), {
+      method: "GET",
+    });
+
+    const result = await response.json();
+    if (result.status !== "success" && !result.success) {
+      throw new Error(result.message || "Gagal mengambil detail pengguna");
+    }
+
+    return result.data?.user;
+  }
+
+  async function getProfile() {
+    const response = await apiHelper.fetchData(_url("/me"), {
+      method: "GET",
+    });
+
+    const result = await response.json();
+    if (result.status !== "success" && !result.success) {
+      throw new Error(result.message || "Gagal mengambil data profil");
+    }
+
+    return result.data?.user;
+  }
+
+  async function putProfile(name, email) {
+    const response = await apiHelper.fetchData(_url("/me"), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+      }),
+    });
+
+    const result = await response.json();
+    if (result.status !== "success" && !result.success) {
+      throw new Error(result.message || "Gagal mengubah profil");
+    }
+
+    return result.data?.user;
+  }
+
+  async function postProfilePhoto(photo) {
+    const formData = new FormData();
+    formData.append("photo", photo, photo.name || "profile.png");
+    const response = await apiHelper.fetchData(_url("/me/photo"), {
+      method: "PUT",
+      body: formData,
+    });
+
+    const result = await response.json();
+    if (result.status !== "success" && !result.success) {
+      throw new Error(result.message || "Gagal mengubah foto profil");
+    }
+
+    return result.message;
+  }
+
+  async function putProfilePassword(password, newPassword, newPasswordConfirmation) {
+    const response = await apiHelper.fetchData(_url("/password"), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password,
+        new_password: newPassword,
+        new_password_confirmation: newPasswordConfirmation || newPassword,
+      }),
+    });
+
+    const result = await response.json();
+    if (result.status !== "success" && !result.success) {
+      throw new Error(result.message || "Gagal mengubah kata sandi");
+    }
+
+    return result.message;
+  }
+
+  return {
+    getUsers,
+    getUserById,
+    getProfile,
+    putProfile,
+    postProfilePhoto,
+    putProfilePassword,
+  };
+})();
+
+export default userApi;

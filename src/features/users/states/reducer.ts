@@ -1,45 +1,65 @@
-import { ActionType } from './action';
+import type { AppAction } from "@/types/action";
+import { ActionType } from "./action";
 
-type UsersAction = { type?: string; payload?: unknown };
-
-type UsersState = {
-  users: unknown[];
-  profile: unknown;
-  isProfile: boolean;
-  isChangeProfile: boolean;
-  isChangeProfilePhoto: boolean;
-  isChangeProfilePassword: boolean;
-};
-
-const initialState: UsersState = {
-  users: [] as unknown[],
-  profile: null as unknown,
-  isProfile: false,
-  isChangeProfile: false,
-  isChangeProfilePhoto: false,
-  isChangeProfilePassword: false,
-};
-
-export default function usersReducer(state: UsersState = initialState, action: UsersAction = {}): UsersState {
-  const payload = (action.payload ?? {}) as Record<string, unknown>;
-
+export const usersReducer = (state = [], action: AppAction = {}) => {
   switch (action.type) {
     case ActionType.SET_USERS:
-      return { ...state, users: payload.users as unknown[] };
-    case ActionType.SET_PROFILE:
-      return { ...state, profile: payload.profile };
-    case ActionType.SET_IS_PROFILE:
-      return { ...state, isProfile: payload.isProfile as boolean };
-    case ActionType.SET_IS_CHANGE_PROFILE:
-      return { ...state, isChangeProfile: payload.isChangeProfile as boolean };
-    case ActionType.SET_IS_CHANGE_PROFILE_PHOTO:
-      return { ...state, isChangeProfilePhoto: payload.isChangeProfilePhoto as boolean };
-    case ActionType.SET_IS_CHANGE_PROFILE_PASSWORD:
-      return {
-        ...state,
-        isChangeProfilePassword: payload.isChangeProfilePassword as boolean,
-      };
+      return action.payload;
     default:
       return state;
   }
-}
+};
+
+export const userReducer = (state = null, action: AppAction = {}) => {
+  switch (action.type) {
+    case ActionType.SET_USER:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+export const profileReducer = (state = null, action: AppAction = {}) => {
+  switch (action.type) {
+    case ActionType.SET_PROFILE:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+export const isProfileReducer = (state = false, action: AppAction = {}) => {
+  switch (action.type) {
+    case ActionType.SET_IS_PROFILE:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+export const isChangeProfileReducer = (state = false, action: AppAction = {}) => {
+  switch (action.type) {
+    case ActionType.SET_IS_CHANGE_PROFILE:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+export const isChangeProfilePhotoReducer = (state = false, action: AppAction = {}) => {
+  switch (action.type) {
+    case ActionType.SET_IS_CHANGE_PROFILE_PHOTO:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+export const isChangeProfilePasswordReducer = (state = false, action: AppAction = {}) => {
+  switch (action.type) {
+    case ActionType.SET_IS_CHANGE_PROFILE_PASSWORD:
+      return action.payload;
+    default:
+      return state;
+  }
+};

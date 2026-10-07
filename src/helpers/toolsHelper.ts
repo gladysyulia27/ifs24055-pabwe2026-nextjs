@@ -1,84 +1,70 @@
-export function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
+import Swal from "sweetalert2";
 
-async function getSwal() {
-  const mod = await import('sweetalert2');
-  return mod.default;
-}
-
-export async function showSuccessDialog(title: string, text = '') {
-  const Swal = await getSwal();
+export function showErrorDialog(message) {
   return Swal.fire({
-    icon: 'success',
-    title,
-    text,
-    confirmButtonColor: '#0369a1',
+    title: "Terjadi Kesalahan",
+    text: message,
+    icon: "error",
+    confirmButtonText: "Tutup",
+    confirmButtonColor: "#ef4444",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.close();
+    }
+    return result;
   });
 }
 
-export async function showErrorDialog(title: string, text = '') {
-  const Swal = await getSwal();
+export function showWarningDialog(message) {
   return Swal.fire({
-    icon: 'error',
-    title,
-    text,
-    confirmButtonColor: '#dc2626',
+    title: "Peringatan",
+    text: message,
+    icon: "warning",
+    confirmButtonText: "Tutup",
+    confirmButtonColor: "#f59e0b",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.close();
+    }
+    return result;
   });
 }
 
-export async function showWarningDialog(title: string, text = '') {
-  const Swal = await getSwal();
+export function showSuccessDialog(message) {
   return Swal.fire({
-    icon: 'warning',
-    title,
-    text,
-    confirmButtonColor: '#d97706',
+    title: "Tindakan Berhasil",
+    text: message,
+    icon: "success",
+    confirmButtonText: "Tutup",
+    confirmButtonColor: "#10b981",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.close();
+    }
+    return result;
   });
 }
 
-export async function showConfirmDialog(
-  title: string,
-  text = '',
-  confirmText = 'Ya',
-  cancelText = 'Batal'
-) {
-  const Swal = await getSwal();
+export function showConfirmDialog(message) {
   return Swal.fire({
-    icon: 'question',
-    title,
-    text,
+    title: "Konfirmasi",
+    text: message,
+    icon: "question",
     showCancelButton: true,
-    confirmButtonColor: '#0369a1',
-    cancelButtonColor: '#94a3b8',
-    confirmButtonText: confirmText,
-    cancelButtonText: cancelText,
+    confirmButtonText: "Ya",
+    cancelButtonText: "Tidak",
+    confirmButtonColor: "#6366f1",
+    cancelButtonColor: "#94a3b8",
   });
 }
 
-export function formatDate(dateString?: string | null) {
-  if (!dateString) return '-';
-  try {
-    return new Date(dateString).toLocaleString('id-ID', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } catch {
-    return dateString;
-  }
-}
-
-export function coverUrl(cover?: string | null) {
-  if (!cover) return null;
-  if (cover.startsWith('http')) return cover;
-  return `https://open-api.delcom.org/${cover}`;
-}
-
-export function photoUrl(photo?: string | null) {
-  if (!photo) return null;
-  if (photo.startsWith('http')) return photo;
-  return `https://open-api.delcom.org/${photo}`;
+export function formatDate(date) {
+  if (!date) return "-";
+  return new Date(date).toLocaleString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }

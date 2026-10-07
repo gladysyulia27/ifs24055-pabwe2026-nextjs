@@ -1,13 +1,17 @@
-'use client';
+import { useState, type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 
-import { useState, ChangeEvent } from 'react';
-
-export default function useInput(defaultValue = '') {
+function useInput(
+  defaultValue = ""
+): [string, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void, Dispatch<SetStateAction<string>>] {
   const [value, setValue] = useState(defaultValue);
 
-  function onChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleValueChange(
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     setValue(event.target.value);
   }
 
-  return [value, onChange, setValue] as const;
+  return [value, handleValueChange, setValue];
 }
+
+export default useInput;
