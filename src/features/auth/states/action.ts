@@ -67,6 +67,7 @@ export function asyncSetIsAuthLogout() {
       await authApi.postLogout();
     } catch (error) {
       // Still proceed with clearing token locally even if server error
+      console.error(error);
     } finally {
       apiHelper.putAccessToken("");
       dispatch(setIsAuthLogoutActionCreator(true));

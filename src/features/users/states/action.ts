@@ -25,6 +25,7 @@ export function asyncSetUsers() {
       const users = await userApi.getUsers();
       dispatch(setUsersActionCreator(users));
     } catch (error) {
+      console.error(error);
       dispatch(setUsersActionCreator([]));
     }
   };
@@ -44,6 +45,7 @@ export function asyncSetUserById(userId) {
       const user = await userApi.getUserById(userId);
       dispatch(setUserActionCreator(user));
     } catch (error) {
+      console.error(error);
       dispatch(setUserActionCreator(null));
     }
   };
@@ -70,6 +72,7 @@ export function asyncSetProfile() {
       const profile = await userApi.getProfile();
       dispatch(setProfileActionCreator(profile));
     } catch (error) {
+      console.error(error);
       dispatch(setProfileActionCreator(null));
     } finally {
       dispatch(setIsProfile(true));

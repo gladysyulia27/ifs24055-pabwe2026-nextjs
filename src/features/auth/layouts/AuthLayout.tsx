@@ -8,7 +8,7 @@ import apiHelper from "../../../helpers/apiHelper";
 import { asyncSetProfile, setIsProfile } from "../../users/states/action";
 import { IconNews } from "@tabler/icons-react";
 
-function AuthLayout({ children }: { children: React.ReactNode }) {
+function AuthLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -64,9 +64,9 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
             <Link
               href="/auth/register"
               className={`flex-1 py-2 text-center text-sm font-semibold rounded-xl transition-all ${
-                !isLoginActive
-                  ? "bg-white text-indigo-700 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                isLoginActive
+                  ? "text-slate-600 hover:text-slate-900"
+                  : "bg-white text-indigo-700 shadow-xs"
               }`}
             >
               Daftar Baru

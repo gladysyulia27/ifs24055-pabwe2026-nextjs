@@ -74,7 +74,7 @@ export function asyncSetPost(postId: number | string) {
 // (finished successfully), mirroring the other features of the app.
 // ---------------------------------------------------------------------------
 function mutation(
-  call: () => Promise<string | unknown>,
+  call: () => Promise<unknown>,
   setSucceeded: (value: boolean) => AppAction,
   setFinished: (value: boolean) => AppAction,
   options: { silent?: boolean; successMessage?: string } = {}
