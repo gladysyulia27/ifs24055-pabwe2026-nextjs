@@ -6,9 +6,17 @@ import { asyncGetUsers } from '@/features/users/states/action';
 import { formatDate, photoUrl } from '@/helpers/toolsHelper';
 import { FiSearch, FiUser } from 'react-icons/fi';
 
+type UserListItem = {
+  id: string | number;
+  name?: string;
+  email?: string;
+  photo?: string | null;
+  created_at?: string | null;
+};
+
 export default function UsersPage() {
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector((s) => s.users);
+  const { users } = useAppSelector((s) => s.users) as { users: UserListItem[] };
   const [search, setSearch] = useState('');
 
   useEffect(() => {
@@ -19,7 +27,7 @@ export default function UsersPage() {
     if (!search.trim()) return users;
     const q = search.toLowerCase();
     return users.filter(
-      (u: any) => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)
+      (u: UserListItem) => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)
     );
   }, [users, search]);
 
@@ -42,7 +50,7 @@ export default function UsersPage() {
       </div>
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <ul className="divide-y divide-slate-100">
-          {filtered.map((user: any) => (
+          {filtered.map((user: UserListItem) => (
             <li key={user.id} className="flex items-center gap-4 px-5 py-4">
               <div className="w-12 h-12 rounded-full bg-sky-100 overflow-hidden flex items-center justify-center">
                 {user.photo ? (

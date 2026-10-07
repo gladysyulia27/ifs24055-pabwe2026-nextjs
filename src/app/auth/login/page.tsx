@@ -11,7 +11,7 @@ import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
 export default function LoginPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { isAuthLogin } = useAppSelector((s) => s.auth);
+  const { isAuthLogin } = useAppSelector((s) => s.auth) as { isAuthLogin: boolean };
   const [email, onEmailChange] = useInput('');
   const [password, onPasswordChange] = useInput('');
   const [error, setError] = useState('');

@@ -14,7 +14,12 @@ import { FiUser, FiCamera, FiSave, FiLock } from 'react-icons/fi';
 export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const { profile, isChangeProfile, isChangeProfilePhoto, isChangeProfilePassword } =
-    useAppSelector((s) => s.users);
+    useAppSelector((s) => s.users) as {
+      profile: { name?: string; email?: string; photo?: string | null } | null;
+      isChangeProfile: boolean;
+      isChangeProfilePhoto: boolean;
+      isChangeProfilePassword: boolean;
+    };
   const [name, onNameChange, setName] = useInput('');
   const [email, onEmailChange, setEmail] = useInput('');
   const [password, onPasswordChange, setPassword] = useInput('');

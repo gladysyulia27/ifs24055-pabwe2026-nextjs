@@ -62,7 +62,9 @@ export function setIsPostLiked(v: boolean) {
   return { type: ActionType.SET_IS_POST_LIKED, payload: { isPostLiked: v } };
 }
 
-export function asyncGetPosts(params: Record<string, unknown> = {}) {
+export function asyncGetPosts(
+  params: Record<string, string | number | boolean | null | undefined> = {}
+) {
   return async (dispatch: AppDispatch) => {
     try {
       const data = await api.getPosts(params);

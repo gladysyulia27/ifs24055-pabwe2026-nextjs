@@ -1,6 +1,8 @@
 import { apiFetch } from '@/helpers/apiHelper';
 
-export async function getPosts(params: Record<string, any> = {}) {
+export async function getPosts(
+  params: Record<string, string | number | boolean | null | undefined> = {}
+) {
   return apiFetch('/posts', { params });
 }
 

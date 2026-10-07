@@ -11,7 +11,10 @@ import { FiMenu, FiLogOut, FiUser, FiChevronDown } from 'react-icons/fi';
 export default function NavbarComponent({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const profile = useAppSelector((s) => s.users.profile);
+  const profile = useAppSelector((s) => s.users.profile) as {
+    name?: string;
+    photo?: string | null;
+  } | null;
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 

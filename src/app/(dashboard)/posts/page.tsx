@@ -6,18 +6,34 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { asyncGetPosts, asyncAddPost } from '@/features/posts/states/action';
 import { formatDate, coverUrl } from '@/helpers/toolsHelper';
 import useInput from '@/hooks/useInput';
-import { FiPlus, FiSearch, FiHeart, FiMessageCircle, FiImage } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiHeart, FiMessageCircle } from 'react-icons/fi';
+
+type PostListItem = {
+  id: string | number;
+  description?: string;
+  cover?: string | null;
+  created_at?: string | null;
+  author?: { name?: string };
+  user?: { name?: string };
+  likes?: unknown[];
+  comments?: unknown[];
+  likes_count?: number;
+  comments_count?: number;
+};
 
 export default function PostsHomePage() {
   const dispatch = useAppDispatch();
-  const { posts, isPostAdd } = useAppSelector((s) => s.posts);
+  const { posts, isPostAdd } = useAppSelector((s) => s.posts) as {
+    posts: PostListItem[];
+    isPostAdd: boolean;
+  };
   const [isMe, setIsMe] = useState(false);
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [description, onDescChange, setDescription] = useInput('');
 
   useEffect(() => {
-    const params: Record<string, any> = {};
+    const params: Record<string, string | number | boolean | null | undefined> = {};
     if (isMe) params.is_me = 1;
     dispatch(asyncGetPosts(params));
   }, [dispatch, isMe]);
@@ -26,7 +42,7 @@ export default function PostsHomePage() {
     if (!search.trim()) return posts;
     const q = search.toLowerCase();
     return posts.filter(
-      (p: any) =>
+      (p: PostListItem) =>
         p.description?.toLowerCase().includes(q) ||
         p.author?.name?.toLowerCase().includes(q)
     );
@@ -90,7 +106,7 @@ export default function PostsHomePage() {
         {filtered.length === 0 ? (
           <div className="text-center py-16 text-slate-600">Belum ada postingan</div>
         ) : (
-          filtered.map((post: any) => (
+          filtered.map((post: PostListItem) => (
             <Link
               key={post.id}
               href={`/posts/${post.id}`}

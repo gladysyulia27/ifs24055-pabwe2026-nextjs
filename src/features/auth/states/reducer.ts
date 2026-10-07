@@ -1,6 +1,6 @@
 import { ActionType } from './action';
 
-type AuthAction = { type: string; payload: Record<string, boolean> };
+type AuthAction = { type?: string; payload?: unknown };
 
 const initialState = {
   isAuthLogin: false,
@@ -8,14 +8,16 @@ const initialState = {
   isAuthLogout: false,
 };
 
-export default function authReducer(state = initialState, action: AuthAction = { type: '', payload: {} }) {
+export default function authReducer(state = initialState, action: AuthAction = {}) {
+  const payload = (action.payload ?? {}) as Record<string, boolean>;
+
   switch (action.type) {
     case ActionType.SET_IS_AUTH_LOGIN:
-      return { ...state, isAuthLogin: action.payload.isAuthLogin };
+      return { ...state, isAuthLogin: payload.isAuthLogin };
     case ActionType.SET_IS_AUTH_REGISTER:
-      return { ...state, isAuthRegister: action.payload.isAuthRegister };
+      return { ...state, isAuthRegister: payload.isAuthRegister };
     case ActionType.SET_IS_AUTH_LOGOUT:
-      return { ...state, isAuthLogout: action.payload.isAuthLogout };
+      return { ...state, isAuthLogout: payload.isAuthLogout };
     default:
       return state;
   }

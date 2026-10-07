@@ -17,12 +17,45 @@ import { formatDate, coverUrl, showConfirmDialog } from '@/helpers/toolsHelper';
 import useInput from '@/hooks/useInput';
 import { FiArrowLeft, FiHeart, FiTrash2, FiEdit2, FiImage } from 'react-icons/fi';
 
+type PostUser = {
+  id: string | number;
+  name?: string;
+};
+
+type PostComment = {
+  id: string | number;
+  author?: PostUser;
+  user?: PostUser;
+  comment?: string;
+  content?: string;
+};
+
+type Post = {
+  description: string;
+  cover?: string | null;
+  created_at?: string;
+  user_id?: string | number;
+  author?: PostUser;
+  user?: PostUser;
+  likes?: Array<string | number>;
+  comments?: PostComment[];
+};
+
+type Profile = PostUser & {
+  email?: string;
+  photo?: string | null;
+};
+
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { post, isPost, isPostDelete } = useAppSelector((s) => s.posts);
-  const profile = useAppSelector((s) => s.users.profile);
+  const { post, isPost, isPostDelete } = useAppSelector((s) => s.posts) as {
+    post: Post | null;
+    isPost: boolean;
+    isPostDelete: boolean;
+  };
+  const profile = useAppSelector((s) => s.users.profile) as Profile | null;
   const [comment, onCommentChange, setComment] = useInput('');
   const [editDesc, onEditDescChange, setEditDesc] = useInput('');
   const [showEdit, setShowEdit] = useState(false);
@@ -217,7 +250,7 @@ export default function PostDetailPage() {
           </button>
         </form>
         <ul className="divide-y divide-slate-100">
-          {(post.comments || []).map((c: any) => (
+          {(post.comments || []).map((c: PostComment) => (
             <li key={c.id} className="py-3 flex justify-between gap-3">
               <div>
                 <p className="text-sm font-medium text-slate-800">

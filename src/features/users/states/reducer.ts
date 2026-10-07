@@ -1,8 +1,17 @@
 import { ActionType } from './action';
 
-type UsersAction = { type: string; payload: Record<string, unknown> };
+type UsersAction = { type?: string; payload?: unknown };
 
-const initialState = {
+type UsersState = {
+  users: unknown[];
+  profile: unknown;
+  isProfile: boolean;
+  isChangeProfile: boolean;
+  isChangeProfilePhoto: boolean;
+  isChangeProfilePassword: boolean;
+};
+
+const initialState: UsersState = {
   users: [] as unknown[],
   profile: null as unknown,
   isProfile: false,
@@ -11,22 +20,24 @@ const initialState = {
   isChangeProfilePassword: false,
 };
 
-export default function usersReducer(state = initialState, action: UsersAction = { type: '', payload: {} }) {
+export default function usersReducer(state: UsersState = initialState, action: UsersAction = {}): UsersState {
+  const payload = (action.payload ?? {}) as Record<string, unknown>;
+
   switch (action.type) {
     case ActionType.SET_USERS:
-      return { ...state, users: action.payload.users };
+      return { ...state, users: payload.users as unknown[] };
     case ActionType.SET_PROFILE:
-      return { ...state, profile: action.payload.profile };
+      return { ...state, profile: payload.profile };
     case ActionType.SET_IS_PROFILE:
-      return { ...state, isProfile: action.payload.isProfile };
+      return { ...state, isProfile: payload.isProfile as boolean };
     case ActionType.SET_IS_CHANGE_PROFILE:
-      return { ...state, isChangeProfile: action.payload.isChangeProfile };
+      return { ...state, isChangeProfile: payload.isChangeProfile as boolean };
     case ActionType.SET_IS_CHANGE_PROFILE_PHOTO:
-      return { ...state, isChangeProfilePhoto: action.payload.isChangeProfilePhoto };
+      return { ...state, isChangeProfilePhoto: payload.isChangeProfilePhoto as boolean };
     case ActionType.SET_IS_CHANGE_PROFILE_PASSWORD:
       return {
         ...state,
-        isChangeProfilePassword: action.payload.isChangeProfilePassword,
+        isChangeProfilePassword: payload.isChangeProfilePassword as boolean,
       };
     default:
       return state;

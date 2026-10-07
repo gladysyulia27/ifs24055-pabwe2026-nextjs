@@ -11,7 +11,7 @@ import { FiUser, FiMail, FiLock, FiUserPlus } from 'react-icons/fi';
 export default function RegisterPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { isAuthRegister } = useAppSelector((s) => s.auth);
+  const { isAuthRegister } = useAppSelector((s) => s.auth) as { isAuthRegister: boolean };
   const [name, onNameChange] = useInput('');
   const [email, onEmailChange] = useInput('');
   const [password, onPasswordChange] = useInput('');
