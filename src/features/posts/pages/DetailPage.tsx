@@ -109,9 +109,9 @@ function DetailPage() {
 
   if (!profile || !post) {
     return (
-      <div role="status" aria-label="Memuat detail postingan" className="flex justify-center py-20">
+      <output aria-label="Memuat detail postingan" className="flex justify-center py-20 block">
         <div className="w-8 h-8 border-4 border-indigo-700 border-t-transparent rounded-full animate-spin" />
-      </div>
+      </output>
     );
   }
 

@@ -63,12 +63,12 @@ function ChangeModal({ show, onClose, onSaved, postId }) {
   if (!show) return null;
 
   return (
-    <div
-      role="dialog"
+    <dialog
+      open
       aria-modal="true"
       aria-label="Ubah postingan"
       data-testid="edit-post-modal"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs w-full max-w-none max-h-none h-full m-0 bg-transparent"
     >
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70">
@@ -139,7 +139,7 @@ function ChangeModal({ show, onClose, onSaved, postId }) {
           </div>
         </form>
       </div>
-    </div>
+    </dialog>
   );
 }
 

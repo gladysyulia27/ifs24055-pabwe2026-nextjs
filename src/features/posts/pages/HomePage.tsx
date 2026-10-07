@@ -76,6 +76,88 @@ function HomePage() {
     { href: "/?tab=me", label: "Postingan Saya", active: isMe, testId: "tab-me" },
   ];
 
+  let content;
+  if (loading && filteredPosts.length === 0) {
+    content = (
+      <div className="py-16 text-center text-slate-600">
+        <IconLoader2 size={36} className="mx-auto text-indigo-700 animate-spin mb-2" />
+        <p className="font-medium">Memuat postingan...</p>
+      </div>
+    );
+  } else if (filteredPosts.length === 0) {
+    content = (
+      <div className="py-16 text-center text-slate-600 bg-white rounded-2xl border border-slate-200/80">
+        <IconArticle size={40} className="mx-auto text-slate-600 mb-2" />
+        <p className="font-medium">Belum ada postingan yang cocok.</p>
+      </div>
+    );
+  } else {
+    content = (
+      <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        {filteredPosts.map((post) => (
+          <li key={`post-${post.id}`} data-testid={`post-card-${post.id}`}>
+            <article className="h-full flex flex-col bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden hover:shadow-md transition-shadow">
+              {post.cover && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={post.cover}
+                  alt={`Cover postingan ${post.author.name}`}
+                  className="w-full h-44 object-cover"
+                />
+              )}
+              <div className="p-5 flex flex-col flex-1 gap-3">
+                <div className="flex items-center gap-3">
+                  {post.author.photo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={post.author.photo}
+                      alt={post.author.name}
+                      className="w-9 h-9 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-indigo-700 text-white flex items-center justify-center text-sm font-bold">
+                      {post.author.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-sm font-bold text-slate-900 leading-tight">
+                      {post.author.name}
+                    </p>
+                    <p className="text-xs text-slate-600">{formatDate(post.created_at)}</p>
+                  </div>
+                </div>
+
+                <p className="text-sm text-slate-700 line-clamp-4 flex-1 whitespace-pre-wrap">
+                  {post.description}
+                </p>
+
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                  <div className="flex items-center gap-4 text-xs font-semibold text-slate-700">
+                    <span className="inline-flex items-center gap-1.5" data-testid={`post-likes-${post.id}`}>
+                      <IconHeart size={16} className="text-rose-600" />
+                      {post.likes.length} suka
+                    </span>
+                    <span className="inline-flex items-center gap-1.5" data-testid={`post-comments-${post.id}`}>
+                      <IconMessageCircle size={16} className="text-sky-700" />
+                      {post.comments.length} komentar
+                    </span>
+                  </div>
+                  <Link
+                    href={`/posts/${post.id}`}
+                    data-testid={`view-post-${post.id}`}
+                    className="text-xs font-bold text-indigo-800 hover:underline"
+                  >
+                    Lihat Detail
+                  </Link>
+                </div>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -145,80 +227,7 @@ function HomePage() {
         </div>
       </div>
 
-      {loading && filteredPosts.length === 0 ? (
-        <div className="py-16 text-center text-slate-600">
-          <IconLoader2 size={36} className="mx-auto text-indigo-700 animate-spin mb-2" />
-          <p className="font-medium">Memuat postingan...</p>
-        </div>
-      ) : filteredPosts.length === 0 ? (
-        <div className="py-16 text-center text-slate-600 bg-white rounded-2xl border border-slate-200/80">
-          <IconArticle size={40} className="mx-auto text-slate-600 mb-2" />
-          <p className="font-medium">Belum ada postingan yang cocok.</p>
-        </div>
-      ) : (
-        <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {filteredPosts.map((post) => (
-            <li key={`post-${post.id}`} data-testid={`post-card-${post.id}`}>
-              <article className="h-full flex flex-col bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden hover:shadow-md transition-shadow">
-                {post.cover && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={post.cover}
-                    alt={`Cover postingan ${post.author.name}`}
-                    className="w-full h-44 object-cover"
-                  />
-                )}
-                <div className="p-5 flex flex-col flex-1 gap-3">
-                  <div className="flex items-center gap-3">
-                    {post.author.photo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={post.author.photo}
-                        alt={post.author.name}
-                        className="w-9 h-9 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-9 h-9 rounded-full bg-indigo-700 text-white flex items-center justify-center text-sm font-bold">
-                        {post.author.name.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm font-bold text-slate-900 leading-tight">
-                        {post.author.name}
-                      </p>
-                      <p className="text-xs text-slate-600">{formatDate(post.created_at)}</p>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-slate-700 line-clamp-4 flex-1 whitespace-pre-wrap">
-                    {post.description}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                    <div className="flex items-center gap-4 text-xs font-semibold text-slate-700">
-                      <span className="inline-flex items-center gap-1.5" data-testid={`post-likes-${post.id}`}>
-                        <IconHeart size={16} className="text-rose-600" />
-                        {post.likes.length} suka
-                      </span>
-                      <span className="inline-flex items-center gap-1.5" data-testid={`post-comments-${post.id}`}>
-                        <IconMessageCircle size={16} className="text-sky-700" />
-                        {post.comments.length} komentar
-                      </span>
-                    </div>
-                    <Link
-                      href={`/posts/${post.id}`}
-                      data-testid={`view-post-${post.id}`}
-                      className="text-xs font-bold text-indigo-800 hover:underline"
-                    >
-                      Lihat Detail
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ul>
-      )}
+      {content}
 
       <AddModal
         show={showAddModal}

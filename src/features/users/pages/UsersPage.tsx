@@ -33,10 +33,65 @@ function UsersPage() {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return (
-      (u.name && u.name.toLowerCase().includes(q)) ||
-      (u.email && u.email.toLowerCase().includes(q))
+      u.name?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q)
     );
   });
+
+  let userGridContent;
+  if (loadingUsers && filteredUsers.length === 0) {
+    userGridContent = (
+      <div className="col-span-full py-16 text-center text-slate-600">
+        <IconLoader2 size={36} className="mx-auto text-indigo-600 animate-spin mb-2" />
+        <p className="font-medium text-slate-600">Memuat daftar pengguna...</p>
+      </div>
+    );
+  } else if (filteredUsers.length === 0) {
+    userGridContent = (
+      <div className="col-span-full py-12 text-center text-slate-600">
+        <IconUsers size={40} className="mx-auto text-slate-500 mb-2" />
+        <p className="font-medium">Tidak ada data pengguna ditemukan.</p>
+      </div>
+    );
+  } else {
+    userGridContent = filteredUsers.map((u) => (
+      <div
+        key={`user-${u.id}`}
+        data-testid={`user-card-${u.id}`}
+        className="p-5 rounded-2xl border border-slate-200/80 hover:border-indigo-300 hover:shadow-md transition-all bg-white flex flex-col justify-between"
+      >
+        <div className="flex items-start gap-3.5">
+          {u.photo ? (
+            <img
+              src={u.photo}
+              alt={u.name}
+              className="w-12 h-12 rounded-full object-cover border border-slate-200 shrink-0"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-base shrink-0">
+              {u.name?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+          )}
+
+          <div className="min-w-0 flex-1">
+            <h2 className="font-bold text-slate-900 truncate">{u.name}</h2>
+            <p className="text-xs text-slate-600 flex items-center gap-1 mt-0.5 truncate">
+              <IconMail size={14} className="shrink-0 text-slate-600" />
+              <span className="truncate">{u.email}</span>
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600">
+          <span className="font-mono font-semibold">ID: #{u.id}</span>
+          <span className="flex items-center gap-1">
+            <IconCalendar size={13} />
+            {formatDate(u.created_at)}
+          </span>
+        </div>
+      </div>
+    ));
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -75,55 +130,7 @@ function UsersPage() {
 
         {/* User Grid */}
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {loadingUsers && filteredUsers.length === 0 ? (
-            <div className="col-span-full py-16 text-center text-slate-600">
-              <IconLoader2 size={36} className="mx-auto text-indigo-600 animate-spin mb-2" />
-              <p className="font-medium text-slate-600">Memuat daftar pengguna...</p>
-            </div>
-          ) : filteredUsers.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-slate-600">
-              <IconUsers size={40} className="mx-auto text-slate-500 mb-2" />
-              <p className="font-medium">Tidak ada data pengguna ditemukan.</p>
-            </div>
-          ) : (
-            filteredUsers.map((u) => (
-              <div
-                key={`user-${u.id}`}
-                data-testid={`user-card-${u.id}`}
-                className="p-5 rounded-2xl border border-slate-200/80 hover:border-indigo-300 hover:shadow-md transition-all bg-white flex flex-col justify-between"
-              >
-                <div className="flex items-start gap-3.5">
-                  {u.photo ? (
-                    <img
-                      src={u.photo}
-                      alt={u.name}
-                      className="w-12 h-12 rounded-full object-cover border border-slate-200 shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-base shrink-0">
-                      {u.name?.charAt(0)?.toUpperCase() || "U"}
-                    </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <h2 className="font-bold text-slate-900 truncate">{u.name}</h2>
-                    <p className="text-xs text-slate-600 flex items-center gap-1 mt-0.5 truncate">
-                      <IconMail size={14} className="shrink-0 text-slate-600" />
-                      <span className="truncate">{u.email}</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600">
-                  <span className="font-mono font-semibold">ID: #{u.id}</span>
-                  <span className="flex items-center gap-1">
-                    <IconCalendar size={13} />
-                    {formatDate(u.created_at)}
-                  </span>
-                </div>
-              </div>
-            ))
-          )}
+          {userGridContent}
         </div>
       </div>
     </div>
