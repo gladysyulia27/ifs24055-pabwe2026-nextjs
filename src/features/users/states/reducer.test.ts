@@ -53,7 +53,7 @@ describe("users reducer", () => {
 
   it("should handle SET_IS_CHANGE_PROFILE_PASSWORD", () => {
     const action = {
-      type: ActionType.SET_IS_CHANGE_PROFILE_PASSWD,
+      type: ActionType.SET_IS_CHANGE_PROFILE_SANDI,
       payload: true,
     };
     expect(isChangeProfilePasswordReducer(false, action)).toBe(true);

@@ -44,7 +44,7 @@ export const isChangeProfilePhotoReducer = (state = false, action: AppAction = {
 };
 
 export const isChangeProfilePasswordReducer = (state = false, action: AppAction = {}) => {
-  if (action.type === ActionType.SET_IS_CHANGE_PROFILE_PASSWD) {
+  if (action.type === ActionType.SET_IS_CHANGE_PROFILE_SANDI) {
     return action.payload;
   }
   return state;

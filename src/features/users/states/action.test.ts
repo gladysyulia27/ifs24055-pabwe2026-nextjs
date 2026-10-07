@@ -49,7 +49,7 @@ describe("users action", () => {
       payload: true,
     });
     expect(setIsChangeProfilePasswordActionCreator(true)).toEqual({
-      type: ActionType.SET_IS_CHANGE_PROFILE_PASSWD,
+      type: ActionType.SET_IS_CHANGE_PROFILE_SANDI,
       payload: true,
     });
   });

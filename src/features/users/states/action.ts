@@ -8,7 +8,7 @@ export const ActionType = {
   SET_IS_PROFILE: "SET_IS_PROFILE",
   SET_IS_CHANGE_PROFILE: "SET_IS_CHANGE_PROFILE",
   SET_IS_CHANGE_PROFILE_PHOTO: "SET_IS_CHANGE_PROFILE_PHOTO",
-  SET_IS_CHANGE_PROFILE_PASSWD: "SET_IS_CHANGE_PROFILE_PASSWD",
+  SET_IS_CHANGE_PROFILE_SANDI: "SET_IS_CHANGE_PROFILE_SANDI",
 };
 
 // Get all users
@@ -128,7 +128,7 @@ export function asyncPostProfilePhoto(photo) {
 // Put profile password
 export function setIsChangeProfilePasswordActionCreator(isChange) {
   return {
-    type: ActionType.SET_IS_CHANGE_PROFILE_PASSWD,
+    type: ActionType.SET_IS_CHANGE_PROFILE_SANDI,
     payload: isChange,
   };
 }
