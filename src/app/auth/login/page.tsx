@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [password, onPasswordChange] = useInput('');
   const [error, setError] = useState('');
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     setError('');
     if (!email.trim() || !password.trim()) {

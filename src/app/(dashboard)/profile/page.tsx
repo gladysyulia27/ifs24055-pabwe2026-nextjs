@@ -34,7 +34,7 @@ export default function ProfilePage() {
     }
   }, [profile, setName, setEmail]);
 
-  async function handleProfile(e: React.FormEvent) {
+  async function handleProfile(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     await dispatch(asyncChangeProfile({ name, email }));
   }
@@ -44,7 +44,7 @@ export default function ProfilePage() {
     if (file) await dispatch(asyncChangeProfilePhoto(file));
   }
 
-  async function handlePassword(e: React.FormEvent) {
+  async function handlePassword(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (newPassword !== confirmPassword) return;
     await dispatch(

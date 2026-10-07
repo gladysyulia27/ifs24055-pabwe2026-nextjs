@@ -106,7 +106,7 @@ export default function PostDetailPage() {
     }
   }
 
-  async function handleComment(e: React.FormEvent) {
+  async function handleComment(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!comment.trim()) return;
     try {
@@ -117,7 +117,7 @@ export default function PostDetailPage() {
     }
   }
 
-  async function handleEdit(e: React.FormEvent) {
+  async function handleEdit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
       await dispatch(asyncChangePost(id, { description: editDesc }));

@@ -8,7 +8,7 @@ import { asyncGetProfile } from '@/features/users/states/action';
 import NavbarComponent from '@/features/posts/components/NavbarComponent';
 import SidebarComponent from '@/features/posts/components/SidebarComponent';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({ children }: { readonly children: React.ReactNode }) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);

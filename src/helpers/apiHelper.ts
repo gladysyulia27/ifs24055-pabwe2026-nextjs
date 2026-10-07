@@ -33,7 +33,8 @@ export async function apiFetch(path: string, options: ApiOptions = {}) {
     auth = true,
   } = options;
 
-  let url = `${DELCOM_BASEURL}${path.startsWith('/') ? path : `/${path}`}`;
+  const normalizedPath = path.startsWith('/') ? path : '/' + path;
+  let url = DELCOM_BASEURL + normalizedPath;
 
   if (params && typeof params === 'object') {
     const search = new URLSearchParams();

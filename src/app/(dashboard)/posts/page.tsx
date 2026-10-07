@@ -48,7 +48,7 @@ export default function PostsHomePage() {
     );
   }, [posts, search]);
 
-  async function handleAdd(e: React.FormEvent) {
+  async function handleAdd(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!description.trim()) return;
     try {
@@ -96,7 +96,7 @@ export default function PostsHomePage() {
               checked={isMe}
               onChange={(e) => setIsMe(e.target.checked)}
               className="rounded border-slate-300 text-sky-800 focus:ring-sky-500"
-            />
+      />
             Postingan Saya
           </label>
         </div>

@@ -17,7 +17,7 @@ export default function RegisterPage() {
   const [password, onPasswordChange] = useInput('');
   const [error, setError] = useState('');
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     setError('');
     if (!name.trim() || !email.trim() || !password.trim()) {
