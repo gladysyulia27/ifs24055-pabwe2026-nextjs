@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "bun src/server.ts dev",
+    "prebuild": "node -e \"const fs=require('fs'); fs.rmSync('src/app/(dashboard)/posts/[id]', {recursive:true, force:true}); fs.rmSync('src/app/posts/[id]', {recursive:true, force:true});\"",
     "build": "next build",
     "start": "bun src/server.ts start",
     "lint": "eslint",
