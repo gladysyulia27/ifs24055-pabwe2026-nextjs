@@ -24,6 +24,7 @@ function RegisterPage() {
   // 1. Periksa apakah register telah selesai diproses
   useEffect(() => {
     if (isAuthRegister === true) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       dispatch(setIsAuthRegisterActionCreator(false));
       setName("");

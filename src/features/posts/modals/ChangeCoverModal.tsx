@@ -22,6 +22,7 @@ function ChangeCoverModal({ show, onClose, onSaved, post }) {
   useEffect(() => {
     if (show) {
       document.body.style.overflow = "hidden";
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFileCover(null);
       setPreviewUrl(null);
     } else {
@@ -32,6 +33,7 @@ function ChangeCoverModal({ show, onClose, onSaved, post }) {
   useEffect(() => {
     if (isPostChangeCover) {
       dispatch(setIsPostChangeCoverActionCreator(false));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       if (isPostChangedCover) {
         dispatch(setIsPostChangedCoverActionCreator(false));

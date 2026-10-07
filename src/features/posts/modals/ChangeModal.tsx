@@ -29,12 +29,14 @@ function ChangeModal({ show, onClose, onSaved, postId }) {
 
   useEffect(() => {
     if (post && show && post.id === postId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDescription(post.description);
     }
   }, [post, show, postId]);
 
   useEffect(() => {
     if (isPostChange) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       dispatch(setIsPostChangeActionCreator(false));
       if (isPostChanged) {

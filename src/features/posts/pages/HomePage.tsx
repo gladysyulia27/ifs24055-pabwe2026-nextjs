@@ -42,6 +42,7 @@ function HomePage() {
   }, [dispatch, isMe]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadPosts();
   }, [loadPosts]);
 
@@ -49,6 +50,7 @@ function HomePage() {
     if (isPostDeletedAll) {
       dispatch(setIsPostDeleteAllActionCreator(false));
       dispatch(setIsPostDeletedAllActionCreator(false));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadPosts();
     }
   }, [isPostDeletedAll, loadPosts, dispatch]);

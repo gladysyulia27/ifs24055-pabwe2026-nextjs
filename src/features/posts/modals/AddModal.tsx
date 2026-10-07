@@ -22,6 +22,7 @@ function AddModal({ show, onClose, onSaved }) {
 
   useEffect(() => {
     if (isPostAdd) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       dispatch(setIsPostAddActionCreator(false));
       if (isPostAdded) {

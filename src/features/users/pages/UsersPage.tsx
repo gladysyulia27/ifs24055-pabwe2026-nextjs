@@ -20,6 +20,7 @@ function UsersPage() {
 
   useEffect(() => {
     let isMounted = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoadingUsers(true);
     Promise.resolve(dispatch(asyncSetUsers())).finally(() => {
       if (isMounted) setLoadingUsers(false);

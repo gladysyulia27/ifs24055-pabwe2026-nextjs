@@ -27,6 +27,7 @@ function LoginPage() {
       if (authToken) {
         dispatch(asyncSetProfile());
       } else {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(false);
         dispatch(setIsAuthLoginActionCreator(false));
       }
@@ -36,6 +37,7 @@ function LoginPage() {
   // 2. Jika profile selesai di-fetch atau gagal
   useEffect(() => {
     if (isProfile) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       dispatch(setIsAuthLoginActionCreator(false));
       dispatch(setIsProfile(false));

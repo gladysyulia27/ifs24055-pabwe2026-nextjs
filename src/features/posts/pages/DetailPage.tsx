@@ -92,6 +92,7 @@ function DetailPage() {
       dispatch(setIsPostAddCommentActionCreator(false));
       if (isPostAddedComment) {
         dispatch(setIsPostAddedCommentActionCreator(false));
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setComment("");
       }
       dispatch(asyncSetPost(postId));

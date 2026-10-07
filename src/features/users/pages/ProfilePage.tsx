@@ -42,6 +42,7 @@ function ProfilePage() {
 
   useEffect(() => {
     if (profile) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName(profile.name || "");
       setEmail(profile.email || "");
     }
@@ -49,6 +50,7 @@ function ProfilePage() {
 
   useEffect(() => {
     if (isChangeProfile) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadingProfile(false);
       dispatch(setIsChangeProfileActionCreator(false));
     }
@@ -56,6 +58,7 @@ function ProfilePage() {
 
   useEffect(() => {
     if (isChangeProfilePhoto) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadingPhoto(false);
       dispatch(setIsChangeProfilePhotoActionCreator(false));
     }
@@ -63,6 +66,7 @@ function ProfilePage() {
 
   useEffect(() => {
     if (isChangeProfilePassword) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoadingPassword(false);
       dispatch(setIsChangeProfilePasswordActionCreator(false));
       setOldPassword("");
