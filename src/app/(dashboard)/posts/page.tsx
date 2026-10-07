@@ -114,7 +114,6 @@ export default function PostsHomePage() {
             >
               {post.cover && (
                 <div className="aspect-video bg-slate-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={/* c8 ignore next */ coverUrl(post.cover) || ''}
                     alt=""

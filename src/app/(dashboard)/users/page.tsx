@@ -54,7 +54,6 @@ export default function UsersPage() {
             <li key={user.id} className="flex items-center gap-4 px-5 py-4">
               <div className="w-12 h-12 rounded-full bg-sky-100 overflow-hidden flex items-center justify-center">
                 {user.photo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={/* c8 ignore next */ photoUrl(user.photo) || ''} alt="" className="w-full h-full object-cover" />
                 ) : (
                   <FiUser className="text-sky-800" aria-hidden />

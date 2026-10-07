@@ -160,7 +160,6 @@ export default function PostDetailPage() {
       <article className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         {post.cover && (
           <div className="aspect-video bg-slate-100">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={/* c8 ignore next */ coverUrl(post.cover) || ''}
               alt=""
